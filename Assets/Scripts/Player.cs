@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Controller2D))]
-public class Player2D : MonoBehaviour
+public class Player : MonoBehaviour
 {
     Controller2D m_Controller;
     Vector3 m_Velocity;
@@ -13,7 +13,7 @@ public class Player2D : MonoBehaviour
     public float Gravity;
     public float MoveSpeed;
     public float JumpHeight;
-    public float JumpTime;
+    public float JumpTimeToApex;
     public KeyCode JumpKey;
     public float AccelTimeAir;
     public float AccelTimeGround;
@@ -29,8 +29,8 @@ public class Player2D : MonoBehaviour
         //v(t) = vi+a*t 
         //La velocidad en un punto de tiempo concreto es la velocidad inicial + aceleracion * tiempo
 
-        Gravity = -(2 * JumpHeight) / Mathf.Pow(JumpTime, 2);
-        m_JumpVelocity = Mathf.Abs(Gravity * JumpTime);
+        Gravity = -(2 * JumpHeight) / Mathf.Pow(JumpTimeToApex, 2);
+        m_JumpVelocity = Mathf.Abs(Gravity) * JumpTimeToApex;
     }
 
     void Update()
@@ -41,23 +41,19 @@ public class Player2D : MonoBehaviour
             m_Velocity.y = 0;
         }
 
-        m_Velocity.y += Gravity * Time.deltaTime;
-        GetInput();
-        m_Controller.Move(m_Velocity*Time.deltaTime);
-    }
-
-    void GetInput()
-    {
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        
+
         if (Input.GetKeyDown(JumpKey) && m_Controller.getCollisions().below)
         {
             m_Velocity.y = m_JumpVelocity;
         }
+
         float targetVelocityX = input.x * MoveSpeed;
 
-        //Cambiamos la aceleracion si estamos en suelo o aire
-        m_Velocity.x = Mathf.SmoothDamp(m_Velocity.x, targetVelocityX, ref m_CurrentVelocity, 
-            m_Controller.getCollisions().below?AccelTimeGround:AccelTimeAir);
+        m_Velocity.x = Mathf.SmoothDamp(m_Velocity.x, targetVelocityX, ref m_CurrentVelocity,
+            m_Controller.getCollisions().below ? AccelTimeGround : AccelTimeAir);
+        m_Velocity.y += Gravity * Time.deltaTime;
+
+        m_Controller.Move(m_Velocity*Time.deltaTime);
     }
 }
