@@ -273,6 +273,7 @@ MonoBehaviour:
   verticalRayCount: 4
   debug: 0
   maxClimbAngle: 80
+  maxDescendAngle: 75
   collisionMask:
     serializedVersion: 2
     m_Bits: 512
@@ -375,7 +376,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Gravity: 0
   MoveSpeed: 4
-  JumpHeight: 4
+  MaxJumpHeight: 4
+  MinJumpHeight: 0.5
   JumpTimeToApex: 0.4
   JumpKey: 32
   AccelTimeAir: 0.2
